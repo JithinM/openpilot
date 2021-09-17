@@ -681,6 +681,9 @@ class Controls:
     controlsState.startMonoTime = int(start_time * 1e9)
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter = self.can_error_counter
+    # rx eng rev fix
+    if (self.v_cruise_kph >= 88.51 ) and (self.v_cruise_kph != 255):
+        controlsState.vCruise = controlsState.vCruise * 0.974
 
     if self.joystick_mode:
       controlsState.lateralControlState.debugState = lac_log
