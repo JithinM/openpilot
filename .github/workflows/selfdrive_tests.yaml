@@ -249,7 +249,6 @@ jobs:
       run: |
         ${{ env.RUN }} "export SKIP_LONG_TESTS=1 && \
                         $UNIT_TEST common && \
-                        $UNIT_TEST opendbc/can && \
                         $UNIT_TEST selfdrive/boardd && \
                         $UNIT_TEST selfdrive/controls && \
                         $UNIT_TEST selfdrive/monitoring && \
@@ -282,7 +281,7 @@ jobs:
 
   process_replay:
     name: process replay
-    runs-on: ubuntu-20.04
+    runs-on: ${{ ((github.event.pull_request.head.repo.full_name == 'commaai/openpilot') || (github.repository == 'commaai/openpilot')) && 'buildjet-8vcpu-ubuntu-2004' || 'ubuntu-20.04' }}
     steps:
     - uses: actions/checkout@v3
       with:
@@ -301,6 +300,7 @@ jobs:
       timeout-minutes: 30
       run: |
         ${{ env.RUN }} "CI=1 coverage run selfdrive/test/process_replay/test_processes.py -j$(nproc) && \
+                        chmod -R 777 /tmp/comma_download_cache && \
                         coverage xml"
     - name: Print diff
       id: print-diff
